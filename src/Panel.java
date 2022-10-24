@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
 
 // First page
@@ -23,8 +22,6 @@ class Panel implements ActionListener {
         restartButton = new JButton("Restart");
         label = new JLabel("Make a selection for Easy, Medium, or Hard");
         slide = new JSlider(JSlider.HORIZONTAL, 4, 6, 5);
-        slide.setPaintLabels(true);
-        slide.setPaintTicks(true);
 
         // add to panel
         panel.add(startButton);
@@ -55,8 +52,6 @@ class Panel implements ActionListener {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setVisible(true);
             frame.add(new PlayingField(slide.getValue()));
-            // get slider value
-            System.out.println(slide.getValue());
         }
     }
 }

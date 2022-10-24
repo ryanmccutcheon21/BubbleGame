@@ -1,5 +1,13 @@
 import javax.swing.*;
 
+// references
+
+// paint multiple circles
+// https://stackoverflow.com/questions/28641300/draw-multiple-circles-using-graphics-in-java
+
+// remove method for an ArrayList
+// https://howtodoinjava.com/java/collections/arraylist/arraylist-remove-example/
+
 public class Main {
     public static void main(String[] args){
         new Panel();

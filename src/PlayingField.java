@@ -1,42 +1,46 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 
 class PlayingField extends JPanel {
-    private int circleX, circleY;
-    private int width = 100;
-    private int height = 100;
     private double distance;
-    // private String playing;
-    private int circle = 0;
-    // private int numCircles;
+    private int difficultyNumCircles = 0;
+    private boolean playing = false;
+    private List<Circle> circles;
 
     public PlayingField(int numCircles) {
-        // this.numCircles = numCircles;
+        // create circles array
+        circles = new ArrayList<Circle> ();
+        // mouse listener
         addMouseListener(new MouseAdapter(){
             public void mouseClicked(MouseEvent e){
-                // if inside JPanel, draw circle
-                if(e.getX() < 350 && e.getX() > 50 && e.getY() > 50 && e.getY() < 350){
-                    // if painted circle < numCircles, drawCircle
-                    if(circle < numCircles){
-                        drawCircle(e.getX()-50, e.getY()-50);
-                        circle += 1;
-                    } else if(circle == numCircles) {
-                        circle += 1;
-                        JOptionPane.showMessageDialog(null, "Are you ready to start?", "Begin", JOptionPane.INFORMATION_MESSAGE);
+                if(playing){
+                    // remove circles if clicked
+                    for(Circle circle: circles){
+                        if(findDistance(circle.getX(), circle.getY(), e.getX()-50, e.getY()-50) < 50){
+                            circles.remove(circle);
+                            PlayingField.this.repaint();
+                        }
                     }
+                    // check if inside JPanel
+                } else if(e.getX() < 350 && e.getX() > 50 && e.getY() > 50 && e.getY() < 350){
+                    // # circles < difficulty, add and draw
+                    circles.add(new Circle(e.getX()-50, e.getY()-50));
+                    PlayingField.this.repaint();
+                    difficultyNumCircles++;
+                    // start game if num of circles = difficulty
+                    if(difficultyNumCircles == numCircles){
+                        JOptionPane.showMessageDialog(null, "Are you ready to start?", "Begin", JOptionPane.INFORMATION_MESSAGE);
+                        playing = true;
+                    }
+                    // throw error if circle outside of Panel
                 } else {
                     JOptionPane.showMessageDialog(null, "The circle does not fit! Try again!", "Erorr", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
-    }
-
-    private void drawCircle(int x, int y){
-        repaint(circleX,circleY,width,height);
-        circleX = x;
-        circleY = y;
-        repaint(circleX, circleY, width, height);
     }
 
     private double findDistance(int x1, int y1, int x2, int y2){
@@ -59,9 +63,8 @@ class PlayingField extends JPanel {
 
     protected void paintComponent(Graphics g){
         super.paintComponent(g);
-        if(circleX != 0){
-            g.setColor(Color.red);
-            g.drawOval(circleX, circleY, width, height);
+        for(Circle circle: circles){
+            circle.drawCircle(g);
         }
     }
 }

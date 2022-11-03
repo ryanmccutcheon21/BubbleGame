@@ -11,7 +11,7 @@ class Panel implements ActionListener {
 
     public Panel() {
         // Frame
-        frame = new JFrame("Project");
+        frame = new JFrame("Final Project");
         frame.setSize(400, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);

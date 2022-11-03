@@ -20,6 +20,12 @@ class PlayingField extends JPanel implements ActionListener{
     protected Timer timer;
     private int roundTime = 15;
 
+    // reposition variables
+    private int upperIntX = 50;
+    private int lowerIntX = 50;
+    private int upperIntY = 50;
+    private int lowerIntY = 50;
+
     public PlayingField(int numCircles) {
         // create Timer
         timer = new Timer(delay, this);
@@ -32,7 +38,7 @@ class PlayingField extends JPanel implements ActionListener{
                 if(playing){
                     // remove circles if clicked
                     for(Circle circle: circles){
-                        if(findDistance(circle.getX(), circle.getY(), e.getX()-50, e.getY()-50) < 50){
+                        if(findDistance(circle.getX(), circle.getY(), e.getX()-35, e.getY()-35) < 35){
                             circles.remove(circle);
                             circlesPopped++;
                             PlayingField.this.repaint();
@@ -40,7 +46,6 @@ class PlayingField extends JPanel implements ActionListener{
                             if(circlesPopped % difficultyNumCircles == 0){
                                 rounds++;
                                 timer.stop();
-                                // playing = false;
                                 // check if rounds = 11 to end game
                                 if(rounds == 11){
                                     JOptionPane.showMessageDialog(null, "You Win!!!", "Congrats!!", JOptionPane.INFORMATION_MESSAGE);
@@ -49,7 +54,7 @@ class PlayingField extends JPanel implements ActionListener{
                                     roundTime = 16 - rounds;
                                     for(int i = 0; i < difficultyNumCircles; i++){
                                         // random positions for circle starting position rounds 2-10
-                                        circles.add(new Circle((int)Math.floor(Math.random()*(350)+1),(int)Math.floor(Math.random()*(350)+1),(int)Math.floor(Math.random()*(350)+1),(int)Math.floor(Math.random()*(350)+1)));
+                                        circles.add(new Circle((int)Math.floor(Math.random()*(365-35)+1)+35,(int)Math.floor(Math.random()*(345-55)+1)+55));
                                         PlayingField.this.repaint();
                                     }
                                     playing = true;
@@ -59,9 +64,9 @@ class PlayingField extends JPanel implements ActionListener{
                         }
                     }
                     // check if inside JPanel
-                } else if(e.getX() < 350 && e.getX() > 50 && e.getY() > 50 && e.getY() < 350){
+                } else if(e.getX() < 366 && e.getX() > 34 && e.getY() > 34 && e.getY() < 346){
                     // # circles < difficulty, add and draw
-                    circles.add(new Circle(e.getX()-50, e.getY()-50, e.getX()-50, e.getY()-50));
+                    circles.add(new Circle(e.getX()-35, e.getY()-35));
                     PlayingField.this.repaint();
                     difficultyNumCircles++;
                     // start round 1 if num of circles = difficulty
@@ -100,12 +105,30 @@ class PlayingField extends JPanel implements ActionListener{
     // Timer function; repeats every 1000 milliseconds
     public void actionPerformed(ActionEvent e){
         if(playing){
+            // increase reposition variables by 18 every round
+            if(rounds > 1){
+                upperIntX = upperIntX + ((rounds - 1) * 18);
+                lowerIntX = lowerIntX + ((rounds - 1) * 18);
+                upperIntY = upperIntY + ((rounds - 1) * 18);
+                lowerIntY = lowerIntY + ((rounds - 1) * 18);
+            }
             for(Circle circle: circles){
-                int randomX = (int)Math.floor(Math.random()*((circle.getA()+50)-(circle.getA()-50)+(circle.getA()-50))+1);
-                int randomY = (int)Math.floor(Math.random()*((circle.getB()+50)-(circle.getB()-50)+(circle.getB()-50))+1);
-                circle.setX(randomX);
-                circle.setY(randomY);
-                System.out.println(randomX + " : " + randomY);
+                // make sure circles stay inside panel
+                if(circle.getOriginalX() + upperIntX > 365){
+                    upperIntX = 365 - circle.getOriginalX();
+                } else if(circle.getOriginalX() - lowerIntX < 35){
+                    lowerIntX = circle.getOriginalX() - 35;
+                } else if(circle.getOriginalY() + upperIntY > 345){
+                    upperIntY = 345 - circle.getOriginalY();
+                } else if(circle.getOriginalY() - lowerIntY < 55){
+                    lowerIntY = circle.getOriginalY() - 35;
+                }
+                // get random # for x and y
+                int newX = (int) Math.floor(Math.random()*((circle.getOriginalX()+upperIntX)-(circle.getOriginalX()-lowerIntX))+(circle.getOriginalX()-lowerIntX)+1);
+                int newY = (int)Math.floor(Math.random()*((circle.getOriginalY()+upperIntY)-(circle.getOriginalY()-lowerIntY))+(circle.getOriginalY()-lowerIntY)+1);
+                // set random x and y position every second
+                circle.setX(newX);
+                circle.setY(newY);
                 PlayingField.this.repaint();
             }
             roundTime--;

@@ -8,6 +8,9 @@ import javax.swing.*;
 // remove method for an ArrayList
 // https://howtodoinjava.com/java/collections/arraylist/arraylist-remove-example/
 
+// Java Timer
+// https://docs.oracle.com/javase/tutorial/uiswing/misc/timer.html
+
 public class Main {
     public static void main(String[] args){
         new Panel();
